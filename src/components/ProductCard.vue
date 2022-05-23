@@ -17,28 +17,28 @@
         </div>
         <div class="product_tags hidden-sm">
           <p>Могут понадобиться:</p>
-          <a href="#" class="url--link">подложка,</a>
-          <a href="#" class="url--link">плинтус натуральный,</a>
-          <a href="#" class="url--link">рулетка,</a>
-          <a href="#" class="url--link">набор для укладки ламината,</a>
-          <a href="#" class="url--link">ножовка по ламинату,</a>
-          <a href="#" class="url--link"
-            >гель для стыков ламината Clic Protect.</a
-          >
+          <ProductLink
+            v-for="product in additionalProducts"
+            :key="product"
+            :linkText="product"
+          />
         </div>
         <div class="product_units">
-          <div class="unit--wrapper">
+          <div
+            class="unit--wrapper"
+            v-on:click="$emit('handleClickGetAlternativeCost', $event)"
+          >
             <div class="unit--select unit--active">
               <p class="ng-binding">За м. кв.</p>
             </div>
             <div class="unit--select">
-              <p class="ng-binding">За упаковку</p>
+              <p class="ng-binding">За {{unitSelect}}</p>
             </div>
           </div>
         </div>
         <p class="product_price_club_card">
           <span class="product_price_club_card_text">По карте<br />клуба</span>
-          <span class="goldPrice">{{priceGold}}</span>
+          <span class="goldPrice">{{ priceGold }}</span>
           <span class="rouble__i black__i">
             <svg
               version="1.0"
@@ -60,7 +60,7 @@
           </span>
         </p>
         <p class="product_price_default">
-          <span class="retailPrice">{{priceRetail}}</span>
+          <span class="retailPrice">{{ priceRetail }}</span>
           <span class="rouble__i black__i">
             <svg
               version="1.0"
@@ -82,7 +82,7 @@
           </span>
         </p>
         <div class="product_price_points">
-          <p class="ng-binding">Можно купить за 231,75 балла</p>
+          <p class="ng-binding">Можно купить за {{ bonusCost }} балла</p>
         </div>
         <div class="list--unit-padd"></div>
         <div class="list--unit-desc">
@@ -90,8 +90,10 @@
             <div class="unit--desc-i"></div>
             <div class="unit--desc-t">
               <p>
-                <span class="ng-binding">Продается упаковками:</span>
-                <span class="unit--infoInn">1 упак. = 2.47 м. кв. </span>
+                <span class="ng-binding">Продается {{ unitFull }}:</span>
+                <span class="unit--infoInn"
+                  >1 {{ unit }} = {{ unitRatioAlt }} {{ unitAlt }}
+                </span>
               </p>
             </div>
           </div>
@@ -104,8 +106,14 @@
                 type="text"
                 value="1"
               />
-              <span class="stepper-arrow up"></span>
-              <span class="stepper-arrow down"></span>
+              <span
+                class="stepper-arrow up"
+                v-on:click="$emit('handleClickArrowUp')"
+              ></span>
+              <span
+                class="stepper-arrow down"
+                v-on:click="$emit('handleClickArrowDown')"
+              ></span>
             </div>
           </div>
           <span
@@ -119,7 +127,9 @@
                 xlink:href="#cart"
               ></use>
             </svg>
-            <span class="ng-binding">В корзину</span>
+            <span class="ng-binding" :data-product-id="productId"
+              >В корзину</span
+            >
           </span>
         </div>
       </div>
@@ -128,16 +138,34 @@
 </template>
 
 <script>
+import ProductLink from "@/components/ProductLink.vue";
 export default {
   name: "ProductCard",
+
   props: {
     productTitle: String,
     code: Number,
     imageSrc: String,
     priceGold: String,
     priceRetail: String,
+    bonusCost: String,
+    unitRatioAlt: String,
+    unitAlt: String,
+    unit: String,
+    unitSelect: String,
+    unitFull: String,
+    additionalProducts: Array,
+    productId: String,
   },
-  emits: ["handleClick"],
+  emits: [
+    "handleClickGetAlternativeCost",
+    "handleClickArrowUp",
+    "handleClickArrowDown",
+  ],
+  components: {
+    ProductLink,
+  },
+  //getAlternativeCost
 };
 </script>
 

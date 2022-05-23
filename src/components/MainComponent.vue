@@ -19,6 +19,15 @@
         :imageSrc="productPhotoSrc"
         :priceRetail="priceRetail"
         :priceGold="priceGold"
+        :bonusCost="bonusCost"
+        :unitRatioAlt="unitRatioAlt"
+        :unitAlt="cardData.unitAlt"
+        :unit="cardData.unit"
+        :unitFull="unitFull"
+        :additionalProducts="additionalProducts"
+        :productId="cardData.productId"
+        :unitSelect="unitSelect"
+        v-on:handleClickGetAlternativeCost="getAlternativeCost($event)"
       />
     </main>
     <FooterComponent />
@@ -96,11 +105,50 @@ export default {
     priceRetail() {
       return this.$store.getters.cardData.priceRetailAlt.toFixed(2);
     },
-    //
+    bonusCost() {
+      return (this.$store.getters.cardData.priceRetailAlt * 0.6).toFixed(2);
+    },
+    unitRatioAlt() {
+      return (1 / this.$store.getters.cardData.unitRatioAlt).toFixed(2);
+    },
+    unitFull() {
+      if (this.$store.getters.cardData.unitFull === "штука") {
+        return "поштучно";
+      } else if (this.$store.getters.cardData.unitFull === "метр погонный") {
+        return "метражом";
+      } else {
+        return "упаковками";
+      }
+    },
+    unitSelect() {
+      if (this.$store.getters.cardData.unitFull === "штука") {
+        return "штуку";
+      } else if (this.$store.getters.cardData.unitFull === "метр погонный") {
+        return "погонный метр";
+      } else {
+        return "упаковку";
+      }
+    },
+    additionalProducts() {
+      const additionalProducts =
+        this.$store.getters.cardData.assocProducts.split(";");
+      additionalProducts.pop();
+      for (let i = 0; i < additionalProducts.length; i++) {
+        if (i < additionalProducts.length - 1) {
+          additionalProducts[i] += ", ";
+        } else {
+          additionalProducts[i] += ".";
+        }
+      }
+
+      return additionalProducts;
+    },
+    //unitSelect
   },
   methods: {
     ...mapActions({
       onClickGetProduct: "getCardData",
+      getAlternativeCost: "getAlternativeCost",
     }),
   },
 };
